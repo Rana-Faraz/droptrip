@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "907130427738",
+    "project_id": "droptrip-3209e",
+    "storage_bucket": "droptrip-3209e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907130427738:android:2fca07960c0ae7ced0fb63",
+        "android_client_info": {
+          "package_name": "com.droptrip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907130427738-rlf4j1tlccbq43mkv10idnli0ac49d73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvOdU9liFQa7Tm9h91cCE7aBMfTOmM2gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907130427738-rlf4j1tlccbq43mkv10idnli0ac49d73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
