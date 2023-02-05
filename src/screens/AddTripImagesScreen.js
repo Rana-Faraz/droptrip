@@ -29,7 +29,9 @@ const AddTripImagesScreen = ({ route, navigation }) => {
     setUploading(true);
     let url;
     images.map(async (image, index) => {
-      const pathToFile = `${auth().currentUser.uid}/images/${index}`;
+      const pathToFile = `${auth().currentUser.uid}/images/${image
+        .split('/')
+        .pop()}`;
       const imageRef = storage().ref(pathToFile);
       console.log(image);
       await imageRef
