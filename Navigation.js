@@ -37,6 +37,7 @@ import AllTripsScreen from './src/screens/admin/AllTripsScreen';
 import AdminTripDetails from './src/screens/admin/AdminTripDetails';
 import UserProfileScreen from './src/screens/admin/UserProfileScreen';
 import AllUsersScreen from './src/screens/admin/AllUsersScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 
 const Stack = createSharedElementStackNavigator();
 
@@ -50,6 +51,7 @@ export const LoginStack = () => (
     <Stack.Screen name="SignUp" component={SignUpScreen} />
     <Stack.Screen name="SignIn" component={SignInScreen} />
     <Stack.Screen name="Email" component={EmailScreen} />
+    <Stack.Screen name="Forgot" component={ForgotPasswordScreen} />
   </Stack.Navigator>
 );
 export const AdminStack = () => (
@@ -89,12 +91,12 @@ export const MainStack = () => (
     />
     <Stack.Screen
       name="Trips"
-      options={{ ...TransitionPresets.SlideFromRightIOS }}
+      options={{ ...TransitionPresets.SlideFromRightIOS, gestureEnabled: true }}
       component={TripsScreen}
     />
     <Stack.Screen
       name="TripDetails"
-      options={{ ...TransitionPresets.SlideFromRightIOS }}
+      options={{ ...TransitionPresets.SlideFromRightIOS, gestureEnabled: true }}
       component={TripDetailScreen}
     />
     <Stack.Screen

@@ -280,6 +280,7 @@ const RequestTripScreen = ({ navigation }) => {
               modal
               mode="date"
               open={openStart}
+              minimumDate={new Date()}
               date={new Date()}
               onConfirm={date => {
                 setOpenStart(false);

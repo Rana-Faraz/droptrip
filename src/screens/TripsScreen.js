@@ -141,8 +141,9 @@ const TripsScreen = props => {
                       fontSize: 20,
                       paddingLeft: 10,
                       paddingVertical: 10,
+                      textTransform: 'capitalize',
                     }}>
-                    {item.title}
+                    {item.keyPoints[0]}
                   </Text>
                   <View
                     style={{
@@ -206,20 +207,27 @@ const TripsScreen = props => {
                               fontSize: 16,
                               marginLeft: 5,
                             }}>
-                            {`${item.totalDays} Days`}
+                            {`${item.totalDays} ${
+                              item.totalDays > 1 ? 'Days' : 'Day'
+                            }`}
                           </Text>
                         </View>
-                        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                          <Feather name="moon" size={18} color="black" />
-                          <Text
-                            style={{
-                              color: '#555',
-                              fontSize: 16,
-                              marginLeft: 5,
-                            }}>
-                            {`${item.totalNights} Nights`}
-                          </Text>
-                        </View>
+                        {item.totalNights != 0 && (
+                          <View
+                            style={{ flexDirection: 'row', marginLeft: 10 }}>
+                            <Feather name="moon" size={18} color="black" />
+                            <Text
+                              style={{
+                                color: '#555',
+                                fontSize: 16,
+                                marginLeft: 5,
+                              }}>
+                              {`${item.totalNights} ${
+                                item.totalNights > 1 ? 'Nights' : 'Night'
+                              }`}
+                            </Text>
+                          </View>
+                        )}
                       </View>
                     </View>
                     <View>

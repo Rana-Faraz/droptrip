@@ -123,8 +123,9 @@ const TripDetailScreen = ({ route, navigation }) => {
                   fontSize: 28,
                   paddingVertical: 10,
                   marginLeft: 20,
+                  textTransform: 'capitalize',
                 }}>
-                {item.title}
+                {item.keyPoints[0]}
               </Text>
               <View
                 style={{
@@ -148,24 +149,28 @@ const TripDetailScreen = ({ route, navigation }) => {
                   <Feather name="sun" size={20} color="black" />
                   <Text
                     style={{
-                      color: 'black',
+                      color: '#555',
                       fontSize: 16,
                       marginLeft: 5,
                     }}>
-                    {`${item.totalDays} Days`}
+                    {`${item.totalDays} ${item.totalDays > 1 ? 'Days' : 'Day'}`}
                   </Text>
                 </View>
-                <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                  <Feather name="moon" size={18} color="black" />
-                  <Text
-                    style={{
-                      color: 'black',
-                      fontSize: 16,
-                      marginLeft: 5,
-                    }}>
-                    {`${item.totalNights} Nights`}
-                  </Text>
-                </View>
+                {item.totalNights != 0 && (
+                  <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                    <Feather name="moon" size={18} color="black" />
+                    <Text
+                      style={{
+                        color: '#555',
+                        fontSize: 16,
+                        marginLeft: 5,
+                      }}>
+                      {`${item.totalNights} ${
+                        item.totalNights > 1 ? 'Nights' : 'Night'
+                      }`}
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
             <View

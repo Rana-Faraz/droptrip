@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import BackButton from '../components/BackButton';
 import UserIcon from '../components/UserIcon';
 import { provinces } from '../data/provinces';
 import { userState } from '../store/AppState';
@@ -24,6 +25,8 @@ const LocationsScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <View style={styles.header}>
+        <BackButton />
+
         <Text
           style={{
             fontSize: 24,

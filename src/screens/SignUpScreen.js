@@ -110,6 +110,7 @@ const SignUpScreen = ({ navigation }) => {
             flexDirection: 'row',
             justifyContent: 'space-evenly',
             width: '50%',
+            marginTop: 10,
           }}>
           <TouchableOpacity onPress={handleImagePicker}>
             <Text style={{ color: 'black' }}>

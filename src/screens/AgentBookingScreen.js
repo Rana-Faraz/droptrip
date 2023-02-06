@@ -139,8 +139,9 @@ const AgentBookingScreen = ({ navigation }) => {
                         fontSize: 20,
                         paddingLeft: 10,
                         paddingVertical: 10,
+                        textTransform: 'capitalize',
                       }}>
-                      {item.trip.title}
+                      {item.trip.keyPoints[0]}
                     </Text>
                     <View
                       style={{
@@ -150,6 +151,7 @@ const AgentBookingScreen = ({ navigation }) => {
                         paddingHorizontal: 20,
                         alignItems: 'center',
                         alignSelf: 'center',
+                        flexWrap: 'wrap',
                       }}>
                       {item.trip.keyPoints?.map((point, index) => (
                         <Text
@@ -206,7 +208,9 @@ const AgentBookingScreen = ({ navigation }) => {
                                 fontSize: 16,
                                 marginLeft: 5,
                               }}>
-                              {`${item.trip.totalDays} Days`}
+                              {`${item.trip.totalDays} ${
+                                item.trip.totalDays > 1 ? 'Days' : 'Day'
+                              }`}
                             </Text>
                           </View>
                           <View
@@ -218,7 +222,9 @@ const AgentBookingScreen = ({ navigation }) => {
                                 fontSize: 16,
                                 marginLeft: 5,
                               }}>
-                              {`${item.trip.totalNights} Nights`}
+                              {`${item.trip.totalNights} ${
+                                item.trip.totalNights > 1 ? 'Nights' : 'Night'
+                              }`}
                             </Text>
                           </View>
                         </View>
@@ -265,10 +271,8 @@ const AgentBookingScreen = ({ navigation }) => {
                   </Text>
                   <View
                     style={{
-                      flexDirection: 'row',
                       justifyContent: 'space-between',
                       width: '100%',
-                      alignItems: 'center',
                     }}>
                     <View
                       style={{
@@ -315,10 +319,8 @@ const AgentBookingScreen = ({ navigation }) => {
                   </View>
                   <View
                     style={{
-                      flexDirection: 'row',
                       justifyContent: 'space-between',
                       width: '100%',
-                      alignItems: 'center',
                       marginBottom: 10,
                     }}>
                     <View

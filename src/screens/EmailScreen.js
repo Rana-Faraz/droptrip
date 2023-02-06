@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -23,16 +24,20 @@ import { ToasterHelper } from 'react-native-customizable-toast';
 import { Ionicons } from '../assets/Icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from '@react-native-firebase/storage';
+import { Feather } from '../assets/Icons/FeatherIcons';
 
 const EmailScreen = ({ navigation }) => {
-  const email = useHookstate(emailState);
-  const password = useHookstate(passwordState);
+  const [pass, setPass] = useState();
+
   const username = useHookstate(usernameState);
   const loading = useHookstate(loadingState);
   const user = useHookstate(userState);
   const image = useHookstate(userImageState);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const usersCollection = firestore().collection('Users');
+  const [email, setEmail] = useState();
+  const [emailActive, setEmailActive] = useState(false);
+  const [passActive, setPassActive] = useState(false);
 
   const handleError = (text, type) => {
     ToasterHelper.show({
@@ -43,19 +48,20 @@ const EmailScreen = ({ navigation }) => {
   };
 
   const handleSignup = async () => {
+    Keyboard.dismiss();
     loading.set(true);
     let url;
     var pattern = new RegExp(
       /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i,
     );
-    if (!pattern.test(email.get())) {
+    if (!pattern.test(email)) {
       const error = 'Please enter a valid email address!';
       handleError(error, 'error');
       loading.set(false);
       return false;
     }
 
-    if (password.get().length < 8) {
+    if (pass.length < 8) {
       const error = `Password must be 8 digits or more!`;
       handleError(error, 'error');
       loading.set(false);
@@ -63,10 +69,10 @@ const EmailScreen = ({ navigation }) => {
     }
 
     auth()
-      .createUserWithEmailAndPassword(email.get(), password.get())
+      .createUserWithEmailAndPassword(email, pass)
       .then(async () => {
         if (image.get() != '') {
-          const pathToFile = `${email.get()}/images/${image
+          const pathToFile = `${email}/images/${image
             .get()
             .path.split('/')
             .pop()}`;
@@ -89,7 +95,7 @@ const EmailScreen = ({ navigation }) => {
           name: '',
           image: url ? url : '',
           username: username.get(),
-          email: email.get(),
+          email: email,
           dateCreated: new Date(),
           isAdmin: false,
           isAgent: false,
@@ -110,17 +116,15 @@ const EmailScreen = ({ navigation }) => {
       })
       .then(async () => {
         let userInfo;
-        await usersCollection.get().then(querySnapshot => {
-          querySnapshot.forEach(docSnapshot => {
-            if (
-              docSnapshot.data().email.toLowerCase() ==
-              email.get().toLowerCase()
-            ) {
-              userInfo = { ...docSnapshot.data(), id: docSnapshot.id };
-            }
-            console.log(userInfo);
+        await usersCollection
+          .where('email', '==', email)
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+              userInfo = documentSnapshot.data();
+              userInfo.id = documentSnapshot.id;
+            });
           });
-        });
         await AsyncStorage.setItem('user', JSON.stringify(userInfo));
         loading.set(false);
         user.set(userInfo);
@@ -150,34 +154,53 @@ const EmailScreen = ({ navigation }) => {
         style={{ alignSelf: 'center', marginTop: 30 }}
       />
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Email"
-          placeholderTextColor={'black'}
-          value={email.get()}
-          keyboardType={'email-address'}
-          textContentType={'emailAddress'}
-          onChangeText={text => email.set(text)}
-        />
         <View style={styles.textInput}>
-          <TextInput
+          <View
             style={{
-              alignSelf: 'center',
-              width: '90%',
-              textAlign: 'center',
-              paddingHorizontal: 25,
-              color: 'black',
-            }}
+              padding: 10,
+              opacity: emailActive ? 1 : 0.5,
+            }}>
+            <Feather name="mail" size={24} color="black" />
+          </View>
+          <TextInput
+            editable={!loading.get()}
+            style={{ width: '85%', color: 'black' }}
+            placeholder="Email"
+            placeholderTextColor={'black'}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            textContentType={'emailAddress'}
+            keyboardType={'email-address'}
+            enablesReturnKeyAutomatically
+            autoCapitalize="none"
+            autoCorrect={false}
+            onFocus={() => setEmailActive(true)}
+            onBlur={() => setEmailActive(false)}
+          />
+        </View>
+        <View style={styles.textInput}>
+          <View
+            style={{
+              padding: 10,
+              opacity: passActive ? 1 : 0.5,
+            }}>
+            <Feather name="lock" size={24} color="black" />
+          </View>
+          <TextInput
+            editable={!loading.get()}
+            style={{ width: '85%', color: 'black' }}
             placeholder="Password"
             placeholderTextColor={'black'}
-            value={password.get()}
-            onChangeText={text => password.set(text)}
+            value={pass}
+            onChangeText={text => setPass(text)}
             textContentType={'password'}
-            keyboardType={'default'}
+            keyboardType={passwordVisible ? 'visible-password' : 'default'}
             enablesReturnKeyAutomatically
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={!passwordVisible}
+            onFocus={() => setPassActive(true)}
+            onBlur={() => setPassActive(false)}
           />
           <TouchableOpacity
             style={styles.icon}
@@ -193,7 +216,7 @@ const EmailScreen = ({ navigation }) => {
           style={styles.button}
           disabled={loading.get()}
           onPress={() => {
-            console.log('email: ', email.get(), 'password: ', password.get());
+            console.log('email: ', email, 'password: ', pass);
             handleSignup();
           }}>
           {loading.get() ? (

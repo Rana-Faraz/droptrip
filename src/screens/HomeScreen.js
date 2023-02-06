@@ -53,8 +53,8 @@ const HomeScreen = ({ navigation }) => {
             fontSize: 24,
             color: 'black',
           }}>
-          Welcome back
-          <Text style={{ fontWeight: 'bold' }}>{`\n${
+          Welcome
+          <Text style={{ fontWeight: 'bold' }}>{` ${
             user.get().username
           }`}</Text>
         </Text>
@@ -170,7 +170,7 @@ const HomeScreen = ({ navigation }) => {
               }}>
               <View>
                 <Text style={{ color: 'black', fontSize: 18 }}>
-                  {item.title}
+                  {item.keyPoints[0]}
                 </Text>
                 <View
                   style={{

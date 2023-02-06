@@ -41,6 +41,7 @@ const OwnerInfoScreen = ({ navigation }) => {
     }
     const userId = user.get().id;
     loading.set(true);
+    console.log('inside me!!!!!!!!', user.get());
     usersCollection
       .doc(userId)
       .update({
@@ -50,6 +51,7 @@ const OwnerInfoScreen = ({ navigation }) => {
         isAgent: true,
       })
       .then(() => {
+        console.log('updation done!!!!!!!!!!!!!!1');
         usersCollection
           .doc(userId)
           .get()
@@ -124,6 +126,7 @@ const OwnerInfoScreen = ({ navigation }) => {
           style={{ marginTop: 20, backgroundColor: 'rgb(205, 231, 235)' }}
           activeOutlineColor="#013237"
           onChangeText={text => setOwnerPhone(text)}
+          maxLength={11}
         />
         <TextInput
           disabled={loading.get()}
@@ -134,6 +137,7 @@ const OwnerInfoScreen = ({ navigation }) => {
           style={{ marginTop: 20, backgroundColor: 'rgb(205, 231, 235)' }}
           activeOutlineColor="#013237"
           onChangeText={text => setOwnerCnic(text)}
+          maxLength={13}
         />
         <TouchableOpacity
           disabled={loading.get()}

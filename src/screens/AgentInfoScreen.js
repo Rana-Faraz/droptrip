@@ -49,10 +49,10 @@ const AgentInfoScreen = ({ navigation }) => {
       handleError(error, 'error');
       return false;
     }
-    const userId = auth().currentUser;
+    const userId = user.get().id;
     loading.set(true);
     usersCollection
-      .doc(userId.uid)
+      .doc(userId)
       .update({
         'company.name': companyName,
         'company.address': companyAddress,
@@ -61,11 +61,11 @@ const AgentInfoScreen = ({ navigation }) => {
       })
       .then(() => {
         usersCollection
-          .doc(userId.uid)
+          .doc(userId)
           .get()
           .then(doc => {
             if (doc.exists) {
-              const data = doc.data();
+              const data = { ...doc.data(), id: doc.id };
               user.set(data);
               AsyncStorage.setItem('user', JSON.stringify(data));
               console.log(data);
@@ -142,6 +142,7 @@ const AgentInfoScreen = ({ navigation }) => {
           activeOutlineColor="#013237"
           keyboardType={'phone-pad'}
           onChangeText={text => setCompanyPhone(text)}
+          maxLength={11}
         />
         <TextInput
           disabled={loading.get()}

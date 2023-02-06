@@ -1,10 +1,17 @@
 import { useHookstate } from '@hookstate/core';
 import firestore from '@react-native-firebase/firestore';
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import BackButton from '../components/BackButton';
 import { userState } from '../store/AppState';
+import { handleError } from './SignUpScreen';
 
 const MembersDetailScreen = ({ route, navigation }) => {
   const { members, item } = route.params;
@@ -13,8 +20,33 @@ const MembersDetailScreen = ({ route, navigation }) => {
   const [leaderEmail, setLeaderEmail] = React.useState(user.get().email);
   const [leaderPhone, setLeaderPhone] = React.useState('');
   const [leaderCNIC, setLeaderCNIC] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const onBook = async () => {
+    setLoading(true);
+    Keyboard.dismiss();
+    if (
+      leaderName === '' ||
+      leaderEmail === '' ||
+      leaderPhone === '' ||
+      leaderCNIC === ''
+    ) {
+      handleError('Please fill all the fields', 'error');
+      setLoading(false);
+      return;
+    }
+    if (leaderCNIC.length !== 13) {
+      handleError('Please enter a valid CNIC', 'error');
+      setLoading(false);
+
+      return;
+    }
+    if (leaderPhone.length !== 11) {
+      handleError('enter a valid phone number starting with "03"', 'error');
+      setLoading(false);
+
+      return;
+    }
     const data = {
       bookedBy: {
         leaderName,
@@ -50,7 +82,16 @@ const MembersDetailScreen = ({ route, navigation }) => {
               })
               .then(() => {
                 navigation.navigate('Booked');
+                setLoading(false);
+              })
+              .catch(error => {
+                handleError(error.message, 'error');
+                setLoading(false);
               });
+          })
+          .catch(error => {
+            handleError(error.message, 'error');
+            setLoading(false);
           });
       });
   };
@@ -81,53 +122,61 @@ const MembersDetailScreen = ({ route, navigation }) => {
           paddingBottom: 100,
         }}>
         <Text variant="titleMedium" style={{ marginTop: 20 }}>
-          Leader Name
+          Full Name
         </Text>
         <TextInput
+          editable={!loading}
           mode="outlined"
           value={leaderName}
           onChangeText={setLeaderName}
-          placeholder="Leader Name"
+          placeholder="Full Name"
           placeholderTextColor={'#666'}
         />
         <Text variant="titleMedium" style={{ marginTop: 20 }}>
-          Leader Email
+          Email
         </Text>
         <TextInput
           mode="outlined"
+          editable={!loading}
           value={leaderEmail}
           onChangeText={setLeaderEmail}
-          placeholder="Leader Email"
+          placeholder="Email"
           placeholderTextColor={'#666'}
           keyboardType="email-address"
         />
         <Text variant="titleMedium" style={{ marginTop: 20 }}>
-          Leader Phone
+          Phone Number
         </Text>
         <TextInput
           mode="outlined"
+          editable={!loading}
           value={leaderPhone}
           onChangeText={setLeaderPhone}
-          placeholder="Leader Phone"
+          placeholder="Phone Number"
           placeholderTextColor={'#666'}
           keyboardType="phone-pad"
+          maxLength={11}
         />
         <Text variant="titleMedium" style={{ marginTop: 20 }}>
-          Leader CNIC
+          CNIC Number
         </Text>
         <TextInput
           mode="outlined"
+          editable={!loading}
           value={leaderCNIC}
           onChangeText={setLeaderCNIC}
-          placeholder="Leader CNIC"
+          placeholder="CNIC"
           placeholderTextColor={'#666'}
           keyboardType="phone-pad"
+          maxLength={13}
         />
       </ScrollView>
       <TouchableOpacity
         onPress={() => onBook()}
         disabled={
-          leaderName && leaderCNIC && leaderEmail && leaderPhone ? false : true
+          leaderName && leaderCNIC && leaderEmail && leaderPhone && !loading
+            ? false
+            : true
         }
         style={{
           backgroundColor: '#013237',
@@ -139,7 +188,9 @@ const MembersDetailScreen = ({ route, navigation }) => {
           width: '90%',
           alignSelf: 'center',
           opacity:
-            leaderName && leaderCNIC && leaderEmail && leaderPhone ? 1 : 0.5,
+            leaderName && leaderCNIC && leaderEmail && leaderPhone && !loading
+              ? 1
+              : 0.5,
         }}>
         <Text
           style={{

@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -13,12 +14,16 @@ import {
   View,
 } from 'react-native';
 import { ToasterHelper } from 'react-native-customizable-toast';
+import { Feather } from '../assets/Icons/FeatherIcons';
 import { Ionicons } from '../assets/Icons/Ionicons';
 import { loadingState, userState } from '../store/AppState';
 
-const SignInScreen = () => {
+const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState();
+  const [emailActive, setEmailActive] = useState(false);
+
   const [pass, setPass] = useState();
+  const [passActive, setPassActive] = useState(false);
   const loading = useHookstate(loadingState);
 
   const user = useHookstate(userState);
@@ -34,6 +39,7 @@ const SignInScreen = () => {
   };
 
   const handleSignIn = () => {
+    Keyboard.dismiss();
     loading.set(true);
     var pattern = new RegExp(
       /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i,
@@ -98,32 +104,53 @@ const SignInScreen = () => {
         style={{ alignSelf: 'center', marginTop: 30 }}
       />
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Email"
-          placeholderTextColor={'black'}
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
         <View style={styles.textInput}>
-          <TextInput
+          <View
             style={{
-              alignSelf: 'center',
-              width: '90%',
-              textAlign: 'center',
-              paddingHorizontal: 25,
-              color: 'black',
-            }}
+              padding: 10,
+              opacity: emailActive ? 1 : 0.5,
+            }}>
+            <Feather name="mail" size={24} color="black" />
+          </View>
+          <TextInput
+            editable={!loading.get()}
+            style={{ width: '85%', color: 'black' }}
+            placeholder="Email"
+            placeholderTextColor={'black'}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            textContentType={'emailAddress'}
+            keyboardType={'email-address'}
+            enablesReturnKeyAutomatically
+            autoCapitalize="none"
+            autoCorrect={false}
+            onFocus={() => setEmailActive(true)}
+            onBlur={() => setEmailActive(false)}
+          />
+        </View>
+        <View style={styles.textInput}>
+          <View
+            style={{
+              padding: 10,
+              opacity: passActive ? 1 : 0.5,
+            }}>
+            <Feather name="lock" size={24} color="black" />
+          </View>
+          <TextInput
+            editable={!loading.get()}
+            style={{ width: '85%', color: 'black' }}
             placeholder="Password"
             placeholderTextColor={'black'}
             value={pass}
             onChangeText={text => setPass(text)}
             textContentType={'password'}
-            keyboardType={'default'}
+            keyboardType={passwordVisible ? 'visible-password' : 'default'}
             enablesReturnKeyAutomatically
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={!passwordVisible}
+            onFocus={() => setPassActive(true)}
+            onBlur={() => setPassActive(false)}
           />
           <TouchableOpacity
             style={styles.icon}
@@ -145,6 +172,12 @@ const SignInScreen = () => {
             <Text style={{ color: 'white' }}>Log In</Text>
           )}
         </TouchableOpacity>
+        <Text
+          disabled={loading.get()}
+          style={{ textAlign: 'center', color: 'black', padding: 20 }}
+          onPress={() => navigation.navigate('Forgot')}>
+          Forgot Password?
+        </Text>
       </View>
     </View>
   );

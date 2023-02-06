@@ -39,10 +39,6 @@ const BookScreen = ({ route, navigation }) => {
     }
   }, [members]);
 
-  useEffect(() => {
-    setPrice(pricePer * members);
-  }, [pricePer]);
-
   return (
     <View
       style={{
@@ -218,10 +214,6 @@ const BookScreen = ({ route, navigation }) => {
             <Text style={{ color: 'black', fontWeight: 'bold' }}>
               {pricePer}
             </Text>
-          </Text>
-          <Text style={{ color: 'black' }}>
-            Total Price:{' '}
-            <Text style={{ color: 'black', fontWeight: 'bold' }}>{price}</Text>
           </Text>
         </View>
       </ScrollView>
